@@ -1,0 +1,67 @@
+package br.inatel.labs.labjpa;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import br.inatel.labs.labjpa.entity.Fornecedor;
+import br.inatel.labs.labjpa.entity.NotaCompra;
+import br.inatel.labs.labjpa.entity.NotaCompraItem;
+import br.inatel.labs.labjpa.entity.Produto;
+import br.inatel.labs.labjpa.service.FornecedorService;
+import br.inatel.labs.labjpa.service.NotaCompraService;
+import br.inatel.labs.labjpa.service.ProdutoService;
+
+@SpringBootTest
+class Seed {
+  @Autowired
+  private ProdutoService produtoService;
+
+  @Autowired
+  private FornecedorService fornecedorService;
+
+  @Autowired
+  private NotaCompraService notaCompraService;
+
+  @Test
+  void load() {
+    Produto p1 = new Produto("Roçadeira");
+    Produto p2 = new Produto("Tobata");
+
+    p1 = produtoService.salvar(p1);
+    p2 = produtoService.salvar(p2);
+
+    List<Produto> produtos = produtoService.listar();
+    produtos.forEach(System.out::println);
+
+    Fornecedor f1 = new Fornecedor("Ed Cunha");
+    Fornecedor f2 = new Fornecedor("Velozes e Edvaldos");
+
+    f1 = fornecedorService.salvar(f1);
+    f2 = fornecedorService.salvar(f2);
+
+    List<Fornecedor> fornecedores = fornecedorService.listar();
+    fornecedores.forEach(System.out::println);
+
+    NotaCompra nc1 = new NotaCompra(LocalDate.of(1999, 5, 10), f1);
+    nc1 = notaCompraService.salvar(nc1);
+
+    NotaCompra nc2 = new NotaCompra(LocalDate.of(2021, 9, 13), f2);
+    nc2 = notaCompraService.salvar(nc2);
+
+    NotaCompraItem nci1 = new NotaCompraItem(nc1, p1, new BigDecimal("2500.00"), 2);
+    NotaCompraItem nci2 = new NotaCompraItem(nc1, p2, new BigDecimal("25000.00"), 1);
+    NotaCompraItem nci3 = new NotaCompraItem(nc2, p1, new BigDecimal("2300.00"), 3);
+    NotaCompraItem nci4 = new NotaCompraItem(nc2, p2, new BigDecimal("23000.00"), 1);
+
+    nci1 = notaCompraService.salvar(nci1);
+    nci2 = notaCompraService.salvar(nci2);
+    nci3 = notaCompraService.salvar(nci3);
+    nci4 = notaCompraService.salvar(nci4);
+
+    List<NotaCompraItem> notaCompraItems = notaCompraService.listaNotaCompraItem();
+    notaCompraItems.forEach(System.out::println);
+  }
+}
